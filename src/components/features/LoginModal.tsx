@@ -6,9 +6,10 @@ import {
   DialogContent,
   IconButton,
   InputAdornment,
+  Tooltip,
   Typography,
 } from "@mui/material";
-import { Visibility, VisibilityOff, Lock, Email, Close as CloseIcon } from "@mui/icons-material";
+import { Visibility, VisibilityOff, Lock, Email, Close as CloseIcon, Info } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -84,23 +85,22 @@ export function LoginModal() {
       maxWidth="lg"
       fullWidth
       PaperProps={{
-        className: "rounded-3xl overflow-hidden",
+        className: "rounded-3xl overflow-hidden bg-white dark:bg-grey-950",
       }}
     >
-      <DialogContent className="p-0 flex">
+      <DialogContent className="p-0 flex flex-col md:flex-row bg-white dark:bg-grey-950">
         <AuthLeftPanel />
 
-        <div className="w-full md:w-1/2 p-10 relative bg-white">
-          <IconButton
-            onClick={closeSignIn}
-            className="absolute top-4 right-4 text-grey-500"
-          >
-            <CloseIcon />
-          </IconButton>
+        <div className="w-full md:w-1/2 md:ml-20 mt-6 md:mt-8 relative bg-white dark:bg-grey-900 px-6 py-6 md:px-10 md:py-8">
+          <div className="absolute top-6 right-0">
+            <IconButton onClick={closeSignIn} className="text-grey-500">
+              <CloseIcon />
+            </IconButton>
+          </div>
 
           <Typography
             variant="h4"
-            className="font-bold text-grey-900 mb-6 leading-snug"
+            className="font-bold text-grey-900 dark:text-grey-50 mb-6 text-center md:text-left"
           >
             <span className="mr-2">👋</span>
             Welcome Back, Glad
@@ -108,14 +108,19 @@ export function LoginModal() {
             To See Your Again
           </Typography>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <Typography
                 variant="body2"
-                className="mb-1 text-grey-700 flex items-center gap-1"
+                className="mb-1 text-grey-700 dark:text-grey-200 flex items-center gap-1"
               >
                 Enter Your Email *
-                <span className="text-grey-400 text-xs">i</span>
+                <Tooltip title="Enter your Email" arrow placement="right">
+                  <Info
+                    fontSize="small"
+                    className="text-grey-400 cursor-pointer"
+                  />
+                </Tooltip>
               </Typography>
               <TextField
                 {...register("email")}
@@ -134,7 +139,12 @@ export function LoginModal() {
                 className="mb-1 text-grey-700 flex items-center gap-1"
               >
                 Password *
-                <span className="text-grey-400 text-xs">i</span>
+                <Tooltip title="Enter Password" arrow placement="right">
+                  <Info
+                    fontSize="small"
+                    className="text-grey-400 cursor-pointer"
+                  />
+                </Tooltip>
               </Typography>
               <TextField
                 {...register("password")}
@@ -168,17 +178,7 @@ export function LoginModal() {
               </button>
             </div>
 
-            <Button
-              type="submit"
-              variant="primary"
-              fullWidth
-              isLoading={isSubmitting}
-              className="mt-2 rounded-full py-3 text-base"
-            >
-              Log In
-            </Button>
-
-            <p className="text-center text-sm text-grey-600 mt-4">
+            <p className="text-start text-sm text-grey-600 dark:text-grey-400 mt-4">
               Don&apos;t have an account?{" "}
               <button
                 type="button"
@@ -189,7 +189,17 @@ export function LoginModal() {
               </button>
             </p>
 
-            <div className="mt-3 text-[11px] rounded-md bg-grey-50 px-3 py-2 text-grey-600">
+            <Button
+              type="submit"
+              variant="primary"
+              fullWidth
+              isLoading={isSubmitting}
+              className="mt-2 rounded-full py-3 text-base"
+            >
+              Log In
+            </Button>
+
+            <div className="mt-3 text-[11px] rounded-md bg-grey-50 dark:bg-grey-900 px-3 py-2 text-grey-600 dark:text-grey-300">
               <span className="font-semibold mr-1">Demo:</span>
               Email <span className="font-mono mr-2">{DEMO_EMAIL}</span>
               Password <span className="font-mono">{DEMO_PASSWORD}</span>

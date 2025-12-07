@@ -9,6 +9,7 @@ import {
   Checkbox,
   FormControlLabel,
   InputAdornment,
+  Tooltip,
 } from "@mui/material";
 import {
   Close as CloseIcon,
@@ -95,21 +96,20 @@ export function SignUpModal() {
       maxWidth="lg"
       fullWidth
       PaperProps={{
-        className: "rounded-3xl overflow-hidden",
+        className: "rounded-3xl overflow-hidden bg-white dark:bg-grey-950",
       }}
     >
-      <DialogContent className="p-0 flex">
+      <DialogContent className="p-0 flex flex-col md:flex-row bg-white dark:bg-grey-950">
         {/* Left side - shared auth panel */}
         <AuthLeftPanel />
 
         {/* Right side - Form */}
-        <div className="w-full md:w-1/2 p-10 relative bg-white">
-          <IconButton
-            onClick={closeSignUp}
-            className="absolute top-4 right-4 text-grey-500"
-          >
-            <CloseIcon />
-          </IconButton>
+        <div className="w-full relative md:w-1/2 md:ml-20 px-6 py-6 md:px-10 md:py-8 bg-white dark:bg-grey-900">
+          <div className="absolute top-6 right-0">
+            <IconButton onClick={closeSignUp} className="text-grey-500">
+              <CloseIcon />
+            </IconButton>
+          </div>
 
           <h2 className="text-2xl font-bold text-grey-900 dark:text-grey-100 mb-2">
             Join Us today, because we take your job search to the next level
@@ -150,7 +150,12 @@ export function SignUpModal() {
             <div>
               <label className="text-sm font-medium text-grey-700 dark:text-grey-300 mb-1 flex items-center gap-1">
                 Enter Your Name *
-                <Info fontSize="small" className="text-grey-400" />
+                <Tooltip title="Enter your name" arrow placement="right">
+                  <Info
+                    fontSize="small"
+                    className="text-grey-400 cursor-pointer"
+                  />
+                </Tooltip>
               </label>
               <TextField
                 {...register("name")}
@@ -164,7 +169,12 @@ export function SignUpModal() {
             <div>
               <label className="text-sm font-medium text-grey-700 dark:text-grey-300 mb-1 flex items-center gap-1">
                 Enter Your Email *
-                <Info fontSize="small" className="text-grey-400" />
+                <Tooltip title="Enter your Email" arrow placement="right">
+                  <Info
+                    fontSize="small"
+                    className="text-grey-400 cursor-pointer"
+                  />
+                </Tooltip>
               </label>
               <TextField
                 {...register("email")}
@@ -179,7 +189,12 @@ export function SignUpModal() {
             <div>
               <label className="text-sm font-medium text-grey-700 dark:text-grey-300 mb-1 flex items-center gap-1">
                 Create Password *
-                <Info fontSize="small" className="text-grey-400" />
+                <Tooltip title="Create Password" arrow placement="right">
+                  <Info
+                    fontSize="small"
+                    className="text-grey-400 cursor-pointer"
+                  />
+                </Tooltip>
               </label>
               <TextField
                 {...register("password")}
