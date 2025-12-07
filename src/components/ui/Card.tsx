@@ -1,10 +1,11 @@
 "use client";
 
-import { Card as MUICard, CardProps as MUICardProps } from "@mui/material";
+import { Card as MUICard } from "@mui/material";
+import type { CardProps as MUICardProps } from "@mui/material/Card";
 import { forwardRef } from "react";
 import clsx from "clsx";
 
-export interface CardProps extends MUICardProps {
+export interface CardProps extends Omit<MUICardProps, "variant"> {
   variant?: "elevated" | "outlined" | "flat";
   hoverable?: boolean;
 }
@@ -14,6 +15,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
     return (
       <MUICard
         ref={ref}
+        // Convert custom variants to MUI's expected props
         variant={variant === "outlined" ? "outlined" : "elevation"}
         elevation={variant === "flat" ? 0 : variant === "elevated" ? 1 : 0}
         className={clsx(
