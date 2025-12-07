@@ -1,0 +1,152 @@
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        // Primary Blue Palette
+        primary: {
+          50: "#EFF6FF",
+          100: "#DBEAFE",
+          200: "#BFDBFE",
+          300: "#93C5FD",
+          400: "#60A5FA",
+          500: "#3B82F6",
+          600: "#2563EB",
+          700: "#1D4ED8",
+          800: "#1E40AF",
+          900: "#1E3A8A",
+          950: "#172554",
+        },
+        // Yellow/Gold Palette
+        accent: {
+          50: "#FEFCE8",
+          100: "#FEF9C3",
+          200: "#FEF08A",
+          300: "#FDE047",
+          400: "#FACC15",
+          500: "#EAB308",
+          600: "#CA8A04",
+          700: "#A16207",
+          800: "#854D0E",
+          900: "#713F12",
+        },
+        // Greyscale
+        grey: {
+          50: "#FAFAFA",
+          100: "#F5F5F5",
+          200: "#E5E5E5",
+          300: "#D4D4D4",
+          400: "#A3A3A3",
+          500: "#737373",
+          600: "#525252",
+          700: "#404040",
+          800: "#262626",
+          900: "#171717",
+          950: "#0A0A0A",
+        },
+        // Feedback Colors
+        success: {
+          50: "#ECFDF5",
+          100: "#D1FAE5",
+          200: "#A7F3D0",
+          300: "#6EE7B7",
+          400: "#34D399",
+          500: "#10B981",
+          600: "#059669",
+          700: "#047857",
+          800: "#065F46",
+          900: "#064E3B",
+        },
+        error: {
+          50: "#FEF2F2",
+          100: "#FEE2E2",
+          200: "#FECACA",
+          300: "#FCA5A5",
+          400: "#F87171",
+          500: "#EF4444",
+          600: "#DC2626",
+          700: "#B91C1C",
+          800: "#991B1B",
+          900: "#7F1D1D",
+        },
+        warning: {
+          50: "#FFF7ED",
+          100: "#FFEDD5",
+          200: "#FED7AA",
+          300: "#FDBA74",
+          400: "#FB923C",
+          500: "#F97316",
+          600: "#EA580C",
+          700: "#C2410C",
+          800: "#9A3412",
+          900: "#7C2D12",
+        },
+      },
+      fontFamily: {
+        sans: ["IBM Plex Sans", "sans-serif"],
+      },
+      fontSize: {
+        // Desktop
+        "h1-desktop": ["56px", { lineHeight: "100%" }],
+        "h2-desktop": ["40px", { lineHeight: "110%" }],
+        "h3-desktop": ["32px", { lineHeight: "120%" }],
+        "h4-desktop": ["24px", { lineHeight: "140%" }],
+        "h5-desktop": ["20px", { lineHeight: "140%" }],
+        "h6-desktop": ["16px", { lineHeight: "150%" }],
+        // Tablet
+        "h1-tablet": ["32px", { lineHeight: "100%" }],
+        "h2-tablet": ["24px", { lineHeight: "110%" }],
+        "h3-tablet": ["20px", { lineHeight: "120%" }],
+        "h4-tablet": ["18px", { lineHeight: "140%" }],
+        "h5-tablet": ["16px", { lineHeight: "140%" }],
+        "h6-tablet": ["15px", { lineHeight: "150%" }],
+        // Mobile
+        "h1-mobile": ["28px", { lineHeight: "120%" }],
+        "h2-mobile": ["22px", { lineHeight: "120%" }],
+        "h3-mobile": ["18px", { lineHeight: "140%" }],
+        "h4-mobile": ["16px", { lineHeight: "140%" }],
+        "h5-mobile": ["14px", { lineHeight: "140%" }],
+        "h6-mobile": ["14px", { lineHeight: "140%" }],
+        // Body text
+        "tagline-medium": ["16px", { lineHeight: "150%" }],
+        tagline: ["16px", { lineHeight: "150%" }],
+        "tagline-bold": ["16px", { lineHeight: "150%", fontWeight: "700" }],
+        "tagline-italic": ["14px", { lineHeight: "150%" }],
+        "tagline-small": ["12px", { lineHeight: "150%" }],
+        "tiny-text": ["10px", { lineHeight: "150%" }],
+      },
+      borderRadius: {
+        DEFAULT: "8px",
+        sm: "4px",
+        md: "8px",
+        lg: "12px",
+        xl: "16px",
+        "2xl": "24px",
+        full: "9999px",
+      },
+      boxShadow: {
+        card: "0px 4px 16px rgba(0, 0, 0, 0.08)",
+        dropdown: "0px 8px 24px rgba(0, 0, 0, 0.12)",
+        modal: "0px 16px 48px rgba(0, 0, 0, 0.16)",
+      },
+      spacing: {
+        "4.5": "18px",
+        "13": "52px",
+        "15": "60px",
+        "18": "72px",
+        "22": "88px",
+        "30": "120px",
+      },
+    },
+  },
+  plugins: [],
+};
+
+export default config;
