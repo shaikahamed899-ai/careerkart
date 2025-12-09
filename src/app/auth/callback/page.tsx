@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CircularProgress, Typography, Box } from "@mui/material";
 import { authApi } from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
 
-export default function AuthCallbackPage() {
+function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { fetchCurrentUser } = useAuthStore();
@@ -93,5 +93,20 @@ export default function AuthCallbackPage() {
         Please wait while we log you in
       </Typography>
     </Box>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense fallback={
+      <Box className="min-h-screen flex flex-col items-center justify-center bg-grey-100">
+        <CircularProgress size={48} className="mb-4" />
+        <Typography variant="h6" className="text-grey-700">
+          Loading...
+        </Typography>
+      </Box>
+    }>
+      <AuthCallbackContent />
+    </Suspense>
   );
 }
