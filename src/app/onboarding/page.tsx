@@ -1,49 +1,92 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Container, Typography, LinearProgress } from "@mui/material";
+import { Container, Typography, CircularProgress } from "@mui/material";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Logo } from "@/components/ui/Logo";
-import { UserType } from "@/types";
+import { onboardingApi } from "@/lib/api";
+import { useAuthStore } from "@/store/authStore";
+import { useUIStore } from "@/store/uiStore";
 import clsx from "clsx";
 
-const userTypes: { type: UserType; label: string; description: string }[] = [
-  {
-    type: "student",
-    label: "Student",
-    description: "Currently pursuing education",
-  },
+type OnboardingUserType = "fresher" | "experienced" | "employer";
+
+const userTypes: { type: OnboardingUserType; label: string; description: string }[] = [
   {
     type: "fresher",
     label: "Fresher",
-    description: "Recently graduated, looking for first job",
+    description: "Recently graduated or student, looking for first job",
   },
   {
-    type: "working_professional",
-    label: "Working Professional",
-    description: "Currently employed, exploring opportunities",
+    type: "experienced",
+    label: "Experienced Professional",
+    description: "Currently employed, exploring new opportunities",
+  },
+  {
+    type: "employer",
+    label: "Employer / Recruiter",
+    description: "Looking to hire talented candidates",
   },
 ];
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const [selectedType, setSelectedType] = useState<UserType | null>(null);
+  const { user, refreshUser } = useAuthStore();
+  const { showSnackbar } = useUIStore();
+  const [selectedType, setSelectedType] = useState<OnboardingUserType | null>(null);
   const [step, setStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalSteps, setTotalSteps] = useState(4);
 
-  const progress = (step / 3) * 100;
+  // Redirect if already onboarded
+  useEffect(() => {
+    if (user?.isOnboarded) {
+      router.push("/jobs");
+    }
+  }, [user, router]);
+
+  const progress = (step / totalSteps) * 100;
   const progressText =
     step === 1
       ? "A Few Steps More"
-      : step === 2
+      : step === totalSteps - 1
       ? "We Are Almost Done"
-      : "Bravo! we are set to go.";
+      : step === totalSteps
+      ? "Bravo! we are set to go."
+      : "Keep Going!";
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (step === 1 && selectedType) {
-      setStep(2);
-      router.push("/onboarding/resume");
+      setIsLoading(true);
+      try {
+        const response = await onboardingApi.setUserType(selectedType);
+        if (response.success && response.data) {
+          setTotalSteps(response.data.questions.length + 1); // +1 for user type step
+          // Navigate to the onboarding steps page
+          router.push(`/onboarding/steps?type=${selectedType}`);
+        }
+      } catch (error) {
+        showSnackbar("Failed to save user type", "error");
+        console.error("Onboarding error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const handleSkip = async () => {
+    setIsLoading(true);
+    try {
+      await onboardingApi.skip();
+      await refreshUser();
+      showSnackbar("You can complete your profile later", "info");
+      router.push("/jobs");
+    } catch (error) {
+      showSnackbar("Failed to skip onboarding", "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -129,16 +172,25 @@ export default function OnboardingPage() {
         </div>
 
         {/* Continue Button */}
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-4">
           <Button
             variant="primary"
             size="large"
             onClick={handleContinue}
-            disabled={!selectedType}
+            disabled={!selectedType || isLoading}
+            isLoading={isLoading}
             className="px-12"
           >
             Continue
           </Button>
+          <button
+            type="button"
+            onClick={handleSkip}
+            disabled={isLoading}
+            className="text-grey-500 hover:text-grey-700 dark:text-grey-400 dark:hover:text-grey-200 text-sm underline"
+          >
+            Skip for now
+          </button>
         </div>
       </Container>
     </div>

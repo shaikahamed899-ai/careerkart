@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/Button";
 import { useThemeStore } from "@/store/themeStore";
 import { useAuthStore } from "@/store/authStore";
 import { useUIStore } from "@/store/uiStore";
+import { useUnreadCount } from "@/lib/api/hooks/useNotifications";
 import clsx from "clsx";
 
 interface NavItem {
@@ -69,6 +70,9 @@ export function Header() {
     closeMobileMenu,
     showSnackbar,
   } = useUIStore();
+
+  // Get dynamic unread notification count
+  const { data: unreadCount = 0 } = useUnreadCount();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [profileAnchorEl, setProfileAnchorEl] = useState<null | HTMLElement>(null);
@@ -155,7 +159,7 @@ export function Header() {
                   onClick={() => router.push("/notifications")}
                   aria-label="Open notifications"
                 >
-                  <Badge badgeContent={3} color="error">
+                  <Badge badgeContent={unreadCount} color="error">
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>
@@ -194,7 +198,7 @@ export function Header() {
                 {!isMobile && (
                   <>
                     <Button variant="outline" onClick={openSignIn}>
-                      Hire Candidate
+                      Login
                     </Button>
                     <Button variant="primary" onClick={openSignUp}>
                       Sign Up
@@ -278,7 +282,7 @@ export function Header() {
                   openSignIn();
                 }}
               >
-                Hire Candidate
+                Login
               </Button>
               <Button
                 variant="primary"

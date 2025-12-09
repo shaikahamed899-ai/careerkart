@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -8,6 +9,7 @@ import {
   InputAdornment,
   Tooltip,
   Typography,
+  Divider,
 } from "@mui/material";
 import { Visibility, VisibilityOff, Lock, Email, Close as CloseIcon, Info } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
@@ -30,8 +32,9 @@ const DEMO_EMAIL = "demo@careerkart.com";
 const DEMO_PASSWORD = "Demo@123";
 
 export function LoginModal() {
+  const router = useRouter();
   const { isSignInOpen, closeSignIn, openSignUp, showSnackbar } = useUIStore();
-  const login = useAuthStore((s) => s.login);
+  const { loginWithCredentials, loginWithGoogle, error: authError } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -39,6 +42,7 @@ export function LoginModal() {
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
+    reset,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -48,34 +52,54 @@ export function LoginModal() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    const success = await loginWithCredentials(data.email, data.password);
 
-    if (data.email !== DEMO_EMAIL || data.password !== DEMO_PASSWORD) {
+    if (success) {
+      showSnackbar("Welcome back!", "success");
+      closeSignIn();
+      reset();
+      const user = useAuthStore.getState().user;
+
+      if (!user) {
+        router.push("/jobs");
+        return;
+      }
+
+      if (user.role === "employer") {
+        if (!user.employer?.companyId) {
+          router.push("/employer/company/setup");
+        } else {
+          router.push("/employer");
+        }
+      } else {
+        if (!user.isOnboarded) {
+          router.push("/onboarding");
+        } else {
+          router.push("/jobs");
+        }
+      }
+    } else {
       setError("password", {
         type: "manual",
-        message: "Invalid email or password",
+        message: authError || "Invalid email or password",
       });
-      showSnackbar("Invalid demo credentials", "error");
-      return;
+      showSnackbar(authError || "Login failed", "error");
     }
+  };
 
-    login({
-      id: "demo-user",
-      name: "Demo User",
-      email: DEMO_EMAIL,
-      avatar: undefined,
-      role: "job_seeker",
-      profileCompletion: 60,
-      resumeUploaded: false,
-    });
-
-    showSnackbar("Logged in as Demo User", "success");
+  const handleGoogleLogin = () => {
+    loginWithGoogle();
     closeSignIn();
   };
 
   const handleSwitchToSignUp = () => {
     closeSignIn();
     openSignUp();
+  };
+
+  const handleForgotPassword = () => {
+    closeSignIn();
+    router.push("/forgot-password");
   };
 
   return (
@@ -172,22 +196,12 @@ export function LoginModal() {
             <div className="flex justify-between items-center text-sm mb-2">
               <button
                 type="button"
-                className="text-primary-600 font-medium"
+                className="text-primary-600 font-medium hover:underline"
+                onClick={handleForgotPassword}
               >
-                Forgot Password
+                Forgot Password?
               </button>
             </div>
-
-            <p className="text-start text-sm text-grey-600 dark:text-grey-400 mt-4">
-              Don&apos;t have an account?{" "}
-              <button
-                type="button"
-                className="text-primary-600 font-semibold"
-                onClick={handleSwitchToSignUp}
-              >
-                Create free account
-              </button>
-            </p>
 
             <Button
               type="submit"
@@ -199,7 +213,39 @@ export function LoginModal() {
               Log In
             </Button>
 
-            <div className="mt-3 text-[11px] rounded-md bg-grey-50 dark:bg-grey-900 px-3 py-2 text-grey-600 dark:text-grey-300">
+            <Divider className="my-4">
+              <span className="text-grey-500 text-sm">Or continue with</span>
+            </Divider>
+
+            <Button
+              type="button"
+              variant="outline"
+              fullWidth
+              onClick={handleGoogleLogin}
+              className="rounded-full py-3"
+              leftIcon={
+                <img
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  alt="Google"
+                  className="w-5 h-5"
+                />
+              }
+            >
+              Continue with Google
+            </Button>
+
+            <p className="text-center text-sm text-grey-600 dark:text-grey-400 mt-4">
+              Don&apos;t have an account?{" "}
+              <button
+                type="button"
+                className="text-primary-600 font-semibold hover:underline"
+                onClick={handleSwitchToSignUp}
+              >
+                Create free account
+              </button>
+            </p>
+
+            <div className="mt-3 text-[11px] rounded-md bg-grey-50 dark:bg-grey-800 px-3 py-2 text-grey-600 dark:text-grey-300">
               <span className="font-semibold mr-1">Demo:</span>
               Email <span className="font-mono mr-2">{DEMO_EMAIL}</span>
               Password <span className="font-mono">{DEMO_PASSWORD}</span>

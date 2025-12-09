@@ -17,6 +17,9 @@ import {
   VisibilityOff,
   Lock,
   Info,
+  Person,
+  Email,
+  Business,
 } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +27,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { useUIStore } from "@/store/uiStore";
+import { useAuthStore } from "@/store/authStore";
 import { AuthLeftPanel } from "@/components/features/AuthLeftPanel";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -49,6 +53,7 @@ const signUpSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
     .regex(/[0-9]/, "Password must contain at least one number"),
+  role: z.enum(["job_seeker", "employer"]).default("job_seeker"),
   acceptTerms: z.boolean().refine((val) => val === true, {
     message: "You must accept the terms and conditions",
   }),
@@ -58,7 +63,8 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export function SignUpModal() {
   const router = useRouter();
-  const { isSignUpOpen, closeSignUp } = useUIStore();
+  const { isSignUpOpen, closeSignUp, openSignIn, showSnackbar } = useUIStore();
+  const { register: registerUser, loginWithGoogle, error: authError } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -66,27 +72,52 @@ export function SignUpModal() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setError,
+    watch,
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
+      role: "job_seeker",
       acceptTerms: false,
     },
   });
 
+  const selectedRole = watch("role");
+
   const onSubmit = async (data: SignUpFormData) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Sign up data:", data);
-    reset();
+    const success = await registerUser(data.email, data.password, data.name, data.role);
+    
+    if (success) {
+      showSnackbar("Account created successfully!", "success");
+      reset();
+      closeSignUp();
+      
+      // Redirect based on role
+      if (data.role === "employer") {
+        router.push("/employer/company/setup");
+      } else {
+        router.push("/onboarding");
+      }
+    } else {
+      setError("email", {
+        type: "manual",
+        message: authError || "Registration failed",
+      });
+      showSnackbar(authError || "Registration failed", "error");
+    }
+  };
+
+  const handleGoogleSignUp = () => {
+    loginWithGoogle();
     closeSignUp();
   };
 
   const handleSwitchToSignIn = () => {
     closeSignUp();
-    router.push("/login");
+    openSignIn();
   };
 
   return (
@@ -116,19 +147,18 @@ export function SignUpModal() {
           </h2>
 
           {/* Social Login Buttons */}
-          <div className="flex gap-3 mt-6">
+          <div className="flex flex-col sm:flex-row gap-3 mt-6">
             <Button
               variant="outline"
               className="flex-1 border-grey-300"
-              leftIcon={
-                <LinkedInIcon />
-              }
+              leftIcon={<LinkedInIcon />}
             >
-              Sign up with LinkedIn
+              LinkedIn
             </Button>
             <Button
               variant="outline"
               className="flex-1 border-grey-300"
+              onClick={handleGoogleSignUp}
               leftIcon={
                 <img
                   src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -137,7 +167,7 @@ export function SignUpModal() {
                 />
               }
             >
-              Sign up with Google
+              Google
             </Button>
           </div>
 
@@ -147,6 +177,55 @@ export function SignUpModal() {
 
           {/* Sign Up Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Role Selection */}
+            <div>
+              <label className="text-sm font-medium text-grey-700 dark:text-grey-300 mb-2 block">
+                I am a *
+              </label>
+              <div className="flex gap-3">
+                <label
+                  className={`flex-1 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                    selectedRole === "job_seeker"
+                      ? "border-primary-600 bg-primary-50 dark:bg-primary-900/20"
+                      : "border-grey-200 dark:border-grey-700 hover:border-grey-300"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    {...register("role")}
+                    value="job_seeker"
+                    className="sr-only"
+                  />
+                  <div className="text-center">
+                    <Person className={selectedRole === "job_seeker" ? "text-primary-600" : "text-grey-400"} />
+                    <p className={`text-sm font-medium mt-1 ${selectedRole === "job_seeker" ? "text-primary-600" : "text-grey-700 dark:text-grey-300"}`}>
+                      Job Seeker
+                    </p>
+                  </div>
+                </label>
+                <label
+                  className={`flex-1 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                    selectedRole === "employer"
+                      ? "border-primary-600 bg-primary-50 dark:bg-primary-900/20"
+                      : "border-grey-200 dark:border-grey-700 hover:border-grey-300"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    {...register("role")}
+                    value="employer"
+                    className="sr-only"
+                  />
+                  <div className="text-center">
+                    <Business className={selectedRole === "employer" ? "text-primary-600" : "text-grey-400"} />
+                    <p className={`text-sm font-medium mt-1 ${selectedRole === "employer" ? "text-primary-600" : "text-grey-700 dark:text-grey-300"}`}>
+                      Employer
+                    </p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
             <div>
               <label className="text-sm font-medium text-grey-700 dark:text-grey-300 mb-1 flex items-center gap-1">
                 Enter Your Name *

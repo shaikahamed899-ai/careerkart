@@ -2,111 +2,212 @@
 
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Job } from "@/types";
-import { Typography, Chip } from "@mui/material";
-import { Business, LocationOn } from "@mui/icons-material";
+import { Job as ApiJob } from "@/lib/api/jobs";
+import { Typography, Chip, Divider } from "@mui/material";
+import { Business, LocationOn, AccessTime, Work, School, AttachMoney } from "@mui/icons-material";
+import { formatDistanceToNow } from "date-fns";
 
 interface JobDetailProps {
-  job: Job | null;
+  job: ApiJob | any | null;
+  onApply?: (jobId: string) => void;
 }
 
-export function JobDetail({ job }: JobDetailProps) {
+// Helper functions
+const getCompanyName = (job: any) => {
+  if (typeof job.company === 'string') return job.company;
+  return job.company?.name || 'Company';
+};
+
+const getLocationString = (job: any) => {
+  if (typeof job.location === 'string') return job.location;
+  if (job.location?.isRemote) return 'Remote';
+  if (job.location?.city) {
+    return job.location.state 
+      ? `${job.location.city}, ${job.location.state}`
+      : job.location.city;
+  }
+  return job.workMode === 'remote' ? 'Remote' : 'Location not specified';
+};
+
+const formatSalary = (salary?: any) => {
+  if (!salary || (!salary.min && !salary.max)) return null;
+  const min = salary.min ? Math.round(salary.min / 100000) : 0;
+  const max = salary.max ? Math.round(salary.max / 100000) : 0;
+  if (min && max) return `₹${min}L - ₹${max}L per year`;
+  if (min) return `₹${min}L+ per year`;
+  if (max) return `Up to ₹${max}L per year`;
+  return null;
+};
+
+export function JobDetail({ job, onApply }: JobDetailProps) {
   if (!job) {
     return (
-      <div className="h-full flex items-center justify-center text-grey-500 text-sm">
-        Select a job from the list to view details.
-      </div>
+      <Card className="h-full flex items-center justify-center text-grey-500 text-sm p-8 bg-white dark:bg-grey-950">
+        <div className="text-center">
+          <Work className="text-6xl text-grey-300 mb-4" />
+          <Typography variant="h6" className="text-grey-500 mb-2">
+            Select a job to view details
+          </Typography>
+          <Typography variant="body2" className="text-grey-400">
+            Click on any job from the list to see full details
+          </Typography>
+        </div>
+      </Card>
     );
   }
 
+  const jobId = job._id || job.id;
+  const companyName = getCompanyName(job);
+  const locationStr = getLocationString(job);
+  const salaryStr = formatSalary(job.salary);
+  const postedAt = job.postedAt || job.createdAt;
+  const timeAgo = postedAt 
+    ? formatDistanceToNow(new Date(postedAt), { addSuffix: true })
+    : '';
+  const companyLogo = job.company?.logo?.url || job.companyLogo;
+
   return (
-    <div className="space-y-4">
-      {/* Top card with organisation, title and SmartApply */}
-      <Card className="p-6 bg-white">
+    <div className="space-y-4 sticky top-24">
+      {/* Top card with organisation, title and Apply */}
+      <Card className="p-6 bg-white dark:bg-grey-950">
         <div className="flex items-start justify-between gap-4 mb-4">
-          <div>
-            <Typography
-              variant="body2"
-              className="text-grey-600 font-medium mb-1"
-            >
-              {job.company}
-            </Typography>
-            <Typography variant="h6" className="font-semibold mb-1">
-              {job.title}
-            </Typography>
-            <div className="flex items-center gap-2 text-sm text-grey-600">
-              <LocationOn fontSize="small" />
-              <span>{job.location}</span>
-              {job.salary && (
-                <>
-                  <span className="mx-1">•</span>
-                  <span>
-                    ₹{job.salary.min}L - ₹{job.salary.max}L
-                  </span>
-                </>
+          <div className="flex items-start gap-4">
+            {/* Company Logo */}
+            <div className="w-16 h-16 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+              {companyLogo ? (
+                <img
+                  src={companyLogo}
+                  alt={companyName}
+                  className="w-12 h-12 object-contain"
+                />
+              ) : (
+                <Business className="text-primary-600 dark:text-primary-400 text-3xl" />
               )}
             </div>
-          </div>
-
-          <div className="flex flex-col items-end gap-2">
-            {job.isSmartApply && (
-              <Button variant="primary" size="small" className="rounded-full px-4">
-                SmartApply
-              </Button>
-            )}
-            <Chip
-              label={job.type || "Remote"}
-              size="small"
-              className="bg-primary-50 text-primary-700 font-medium"
-            />
+            <div>
+              <Typography
+                variant="body2"
+                className="text-grey-600 dark:text-grey-400 font-medium mb-1"
+              >
+                {companyName}
+                {job.company?.ratings?.overall && (
+                  <span className="ml-2">⭐ {job.company.ratings.overall.toFixed(1)}</span>
+                )}
+              </Typography>
+              <Typography variant="h5" className="font-semibold mb-2 text-grey-900 dark:text-white">
+                {job.title}
+              </Typography>
+              <div className="flex flex-wrap items-center gap-3 text-sm text-grey-600 dark:text-grey-400">
+                <div className="flex items-center gap-1">
+                  <LocationOn fontSize="small" />
+                  <span>{locationStr}</span>
+                </div>
+                {timeAgo && (
+                  <div className="flex items-center gap-1">
+                    <AccessTime fontSize="small" />
+                    <span>Posted {timeAgo}</span>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Match cards */}
-        {job.matchScore !== undefined && (
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 bg-grey-50 rounded-2xl p-4">
-            <div className="rounded-xl bg-white border border-grey-100 p-3">
-              <p className="text-xs text-grey-500 mb-1">Required Score for this Job</p>
-              <p className="text-2xl font-semibold text-grey-900">
-                {job.requiredScore ?? 68}
-              </p>
-            </div>
-            <div className="rounded-xl bg-accent-50 border border-accent-100 p-3">
-              <p className="text-xs text-grey-500 mb-1">Your Score</p>
-              <p className="text-2xl font-semibold text-accent-700">
-                {job.yourScore ?? 75}
-              </p>
-            </div>
-            <div className="rounded-xl bg-success-50 border border-success-100 p-3 flex items-center justify-between">
-              <div>
-                <p className="text-xs text-grey-500 mb-1">Your Profile Match</p>
-                <p className="text-2xl font-semibold text-success-700">
-                  {job.matchScore}%
-                </p>
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {job.employmentType && (
+            <Chip
+              label={job.employmentType.replace('_', ' ')}
+              size="small"
+              className="capitalize bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
+            />
+          )}
+          {job.workMode && (
+            <Chip
+              label={job.workMode}
+              size="small"
+              className="capitalize"
+              color={job.workMode === 'remote' ? 'success' : 'default'}
+            />
+          )}
+          {job.experience?.min !== undefined && (
+            <Chip
+              icon={<Work fontSize="small" />}
+              label={`${job.experience.min}${job.experience.max ? `-${job.experience.max}` : '+'} years exp`}
+              size="small"
+            />
+          )}
+          {job.openings && job.openings > 1 && (
+            <Chip
+              label={`${job.openings} openings`}
+              size="small"
+              color="info"
+            />
+          )}
+        </div>
+
+        {/* Salary & Apply */}
+        <div className="flex items-center justify-between pt-4 border-t border-grey-200 dark:border-grey-700">
+          <div>
+            {salaryStr && (
+              <div className="flex items-center gap-2">
+                <AttachMoney className="text-success-600" />
+                <Typography variant="h6" className="font-semibold text-success-600">
+                  {salaryStr}
+                </Typography>
               </div>
-              <Button variant="primary" size="small" className="rounded-full px-4">
-                Retry Interview
-              </Button>
+            )}
+            {!salaryStr && (
+              <Typography variant="body2" className="text-grey-500">
+                Salary not disclosed
+              </Typography>
+            )}
+          </div>
+          <Button 
+            variant={job.hasApplied ? "outline" : "primary"} 
+            size="medium" 
+            className="rounded-full px-6"
+            onClick={() => onApply?.(jobId)}
+            disabled={job.hasApplied}
+          >
+            {job.hasApplied ? "Already Applied" : "Apply Now"}
+          </Button>
+        </div>
+
+        {/* Match Score */}
+        {job.matchScore !== undefined && job.matchScore > 0 && (
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 bg-grey-50 dark:bg-grey-800 rounded-2xl p-4">
+            <div className="rounded-xl bg-white dark:bg-grey-900 border border-grey-100 dark:border-grey-700 p-3">
+              <p className="text-xs text-grey-500 mb-1">Profile Match</p>
+              <p className="text-2xl font-semibold text-success-600">
+                {job.matchScore}%
+              </p>
+            </div>
+            <div className="rounded-xl bg-primary-50 dark:bg-primary-900/30 border border-primary-100 dark:border-primary-800 p-3">
+              <p className="text-xs text-grey-500 mb-1">Applications</p>
+              <p className="text-2xl font-semibold text-primary-700 dark:text-primary-300">
+                {job.stats?.applications || 0}
+              </p>
             </div>
           </div>
         )}
       </Card>
 
       {/* Description sections */}
-      <Card className="p-6 bg-white">
-        <section className="space-y-4 text-sm leading-relaxed text-grey-800">
+      <Card className="p-6 bg-white dark:bg-grey-950">
+        <section className="space-y-6 text-sm leading-relaxed text-grey-800 dark:text-grey-200">
           {job.description && (
             <div>
-              <h3 className="font-semibold mb-1">About Measured</h3>
-              <p>{job.description}</p>
+              <h3 className="font-semibold mb-2 text-grey-900 dark:text-white text-base">About the Role</h3>
+              <p className="whitespace-pre-line">{job.description}</p>
             </div>
           )}
 
           {job.responsibilities && job.responsibilities.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-1">Key Responsibilities</h3>
+              <h3 className="font-semibold mb-2 text-grey-900 dark:text-white text-base">Key Responsibilities</h3>
               <ul className="list-disc pl-5 space-y-1">
-                {job.responsibilities.map((item, idx) => (
+                {job.responsibilities.map((item: string, idx: number) => (
                   <li key={idx}>{item}</li>
                 ))}
               </ul>
@@ -115,42 +216,81 @@ export function JobDetail({ job }: JobDetailProps) {
 
           {job.requirements && job.requirements.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-1">Ideal Experience</h3>
+              <h3 className="font-semibold mb-2 text-grey-900 dark:text-white text-base">Requirements</h3>
               <ul className="list-disc pl-5 space-y-1">
-                {job.requirements.map((item, idx) => (
+                {job.requirements.map((item: string, idx: number) => (
                   <li key={idx}>{item}</li>
                 ))}
               </ul>
             </div>
           )}
 
-          {job.benefits && job.benefits.length > 0 && (
+          {job.niceToHave && job.niceToHave.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-1">Benefits</h3>
+              <h3 className="font-semibold mb-2 text-grey-900 dark:text-white text-base">Nice to Have</h3>
               <ul className="list-disc pl-5 space-y-1">
-                {job.benefits.map((item, idx) => (
+                {job.niceToHave.map((item: string, idx: number) => (
                   <li key={idx}>{item}</li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {/* Skills */}
+          {job.skills && job.skills.length > 0 && (
+            <div>
+              <h3 className="font-semibold mb-2 text-grey-900 dark:text-white text-base">Skills Required</h3>
+              <div className="flex flex-wrap gap-2">
+                {job.skills.map((skill: any, idx: number) => (
+                  <Chip
+                    key={idx}
+                    label={typeof skill === 'string' ? skill : skill.name}
+                    size="small"
+                    color={skill.isRequired ? 'primary' : 'default'}
+                    variant={skill.isRequired ? 'filled' : 'outlined'}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </section>
       </Card>
 
-      {/* Donna tips strip placeholder */}
-      <Card className="p-4 bg-primary-50 flex items-center justify-between">
+      {/* Company Info Card */}
+      {job.company && typeof job.company === 'object' && (
+        <Card className="p-4 bg-grey-50 dark:bg-grey-900">
+          <div className="flex items-center justify-between">
+            <div>
+              <Typography variant="subtitle2" className="font-semibold text-grey-900 dark:text-white">
+                About {companyName}
+              </Typography>
+              {job.company.industry && (
+                <Typography variant="body2" className="text-grey-600 dark:text-grey-400">
+                  {job.company.industry}
+                </Typography>
+              )}
+            </div>
+            <Button variant="outline" size="small" className="rounded-full">
+              View Company
+            </Button>
+          </div>
+        </Card>
+      )}
+
+      {/* AI Assistant tip */}
+      <Card className="p-4 bg-primary-50 dark:bg-primary-900/30 flex items-center justify-between">
         <div>
-          <p className="font-semibold mb-1">
-            Let&apos;s Level up more , Donna has quick tips to boost your chances
+          <p className="font-semibold mb-1 text-grey-900 dark:text-white">
+            Need help preparing for this role?
           </p>
           <div className="flex flex-wrap gap-2 text-xs mt-1">
             <Chip label="Interview Tips" size="small" />
-            <Chip label="Salary Negotiation" size="small" />
-            <Chip label="How to smartly Track job application" size="small" />
+            <Chip label="Salary Insights" size="small" />
+            <Chip label="Company Reviews" size="small" />
           </div>
         </div>
         <Button variant="primary" size="small" className="rounded-full px-4">
-          Talk To Donna
+          Get Help
         </Button>
       </Card>
     </div>

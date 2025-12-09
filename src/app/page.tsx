@@ -11,12 +11,16 @@ import { PlayArrow, AutoAwesome } from "@mui/icons-material";
 import { Box, Container, Typography, Grid, Avatar } from "@mui/material";
 
 const trustedCompanies = [
-  { name: "Capgemini", logo: "/logos/capgemini.png" },
-  { name: "Accenture", logo: "/logos/accenture.png" },
-  { name: "Deloitte", logo: "/logos/deloitte.png" },
-  { name: "Infosys", logo: "/logos/infosys.png" },
-  { name: "TCS", logo: "/logos/tcs.png" },
-  { name: "Wipro", logo: "/logos/wipro.png" },
+  { name: "3one4", logo: "/assets/peakxv.png" },
+  { name: "Accel", logo: "/assets/accel.png" },
+  { name: "Blume", logo: "/assets/blume.png" },
+  { name: "Chirate", logo: "/assets/chirate.png" },
+  { name: "Elevation", logo: "/assets/kalaari.png" },
+  { name: "Kalaari", logo: "/assets/elevation.png" },
+  { name: "Lightbox", logo: "/assets/lightbox.png" },
+  { name: "Lightspeed", logo: "/assets/3one4.png" },
+  { name: "Matrix", logo: "/assets/lightspeed.png" },
+  { name: "PeakXV", logo: "/assets/matrix.png" },
 ];
 
 const features = [
@@ -74,7 +78,7 @@ export default function HomePage() {
 
       <main className="min-h-screen">
         {/* Hero Section */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-primary-50/50 to-white dark:from-primary-950/20 dark:to-grey-950 py-16 md:py-24">
+        <section className="relative overflow-hidden bg-[#F0F6FF] py-16 md:py-24">
           {/* Background decorative elements */}
           <div className="absolute top-20 right-0 w-64 h-64 bg-primary-100 dark:bg-primary-900/20 rounded-full blur-3xl opacity-50" />
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent-100 dark:bg-accent-900/20 rounded-full blur-3xl opacity-30" />
@@ -233,62 +237,172 @@ export default function HomePage() {
         </section>
 
         {/* Trusted By Section */}
-        <section className="py-12 bg-grey-50 dark:bg-grey-900">
-          <Container maxWidth="lg">
-            <Typography
-              variant="body2"
-              className="text-center text-grey-500 mb-8"
-            >
-              Trusted by Top Employers & Backed by Believers
-            </Typography>
-            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-              {trustedCompanies.map((company) => (
-                <div
-                  key={company.name}
-                  className="text-grey-400 dark:text-grey-600 font-semibold text-lg"
+        <section className="bg-white py-12 dark:bg-grey-900">
+          <div className="max-w-[1300px] mx-auto px-[70px] py-[35px] gap-[80px]" style={{height: '140px'}}>
+            <div className="flex items-center justify-between">
+              {/* Left Section */}
+              <div className="max-w-[494px] gap-4" style={{height: '140px'}}>
+                <Typography
+                  variant="h3"
+                  className="text-grey-900 dark:text-white mb-4"
+                  style={{
+                    fontFamily: 'IBM Plex Sans',
+                    fontWeight: 500,
+                    fontStyle: 'normal',
+                    fontSize: '32px',
+                    lineHeight: '120%',
+                    letterSpacing: '0%'
+                  }}
                 >
-                  {company.name}
+                  Trusted by Top Employers & Backed by Believers
+                </Typography>
+                <Typography
+                  variant="body2"
+                  className="text-grey-600 dark:text-grey-400 italic"
+                  style={{
+                    fontFamily: 'IBM Plex Sans',
+                    fontWeight: 400,
+                    fontStyle: 'italic',
+                    fontSize: '16px',
+                    lineHeight: '150%',
+                    letterSpacing: '0%'
+                  }}
+                >
+                  We're powered by 10,000+ top recruiters and hiring legends who are always on the lookout for talent like you.
+                </Typography>
+              </div>
+
+              {/* Right Section - Logo Grid */}
+              <div className="max-w-[726px]" style={{height: '137px'}}>
+                <div className="grid grid-rows-2 grid-cols-5 gap-[23px_20px]">
+                  {trustedCompanies.map((company) => (
+                    <div
+                      key={company.name}
+                      className="flex items-center justify-center"
+                      style={{width: '129.2px', height: '40.32px'}}
+                    >
+                      <img
+                        src={company.logo}
+                        alt={company.name}
+                        className="max-w-full max-h-full object-contain"
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
-          </Container>
+          </div>
         </section>
 
         {/* How We Work Section */}
         <section className="py-16 bg-primary-600">
           <Container maxWidth="lg">
-            <div className="flex flex-col md:flex-row items-center gap-12">
-              <div className="flex-1 text-white">
-                <Typography variant="h2" className="text-3xl md:text-4xl font-bold mb-4">
-                  How We Work:
+            <div className="flex flex-col lg:flex-row gap-12 items-center">
+              {/* Left Section - How We Work and Feature Cards */}
+              <div className="flex-1">
+                <Typography variant="h2" className="text-4xl font-bold mb-2 text-white">
+                  How We Work-
                 </Typography>
-                <Typography variant="h3" className="text-2xl md:text-3xl font-semibold mb-6">
+                <Typography variant="h3" className="text-2xl italic font-semibold mb-12 text-white">
                   Simple. Smart. Seamless.
                 </Typography>
 
-                <div className="space-y-4">
-                  {[
-                    "Upload your resume or create one with AI assistance",
-                    "Get matched with jobs that fit your skills and goals",
-                    "Apply with one click using SmartApply",
-                    "Track applications and get interview prep support",
-                  ].map((step, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-white text-primary-600 flex items-center justify-center text-sm font-bold flex-shrink-0">
-                        {index + 1}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Feature Card 1 */}
+                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold">
+                          1
+                        </div>
                       </div>
-                      <Typography variant="body1">{step}</Typography>
+                      <div>
+                        <Typography variant="h6" className="font-bold text-grey-900 mb-2">
+                          Upload & Create
+                        </Typography>
+                        <Typography variant="body2" className="text-grey-600">
+                          Upload your existing resume or create a new one with our AI assistance. Get instant feedback and suggestions to make it stand out.
+                        </Typography>
+                      </div>
                     </div>
-                  ))}
+                  </div>
+
+                  {/* Feature Card 2 */}
+                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold">
+                          2
+                        </div>
+                      </div>
+                      <div>
+                        <Typography variant="h6" className="font-bold text-grey-900 mb-2">
+                          Smart Matching
+                        </Typography>
+                        <Typography variant="body2" className="text-grey-600">
+                          Our AI analyzes your skills, experience, and preferences to match you with perfect job opportunities from top companies.
+                        </Typography>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Feature Card 3 */}
+                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold">
+                          3
+                        </div>
+                      </div>
+                      <div>
+                        <Typography variant="h6" className="font-bold text-grey-900 mb-2">
+                          One-Click Apply
+                        </Typography>
+                        <Typography variant="body2" className="text-grey-600">
+                          Apply to multiple jobs with SmartApply technology. Customize your applications automatically and track everything in one place.
+                        </Typography>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Feature Card 4 */}
+                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold">
+                          4
+                        </div>
+                      </div>
+                      <div>
+                        <Typography variant="h6" className="font-bold text-grey-900 mb-2">
+                          Interview Prep
+                        </Typography>
+                        <Typography variant="body2" className="text-grey-600">
+                          Practice with AI-powered mock interviews, get real-time feedback, and receive personalized coaching to ace your interviews.
+                        </Typography>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
+              {/* Right Section - Video Player */}
               <div className="flex-1">
-                <img
-                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600"
-                  alt="How we work"
-                  className="rounded-2xl shadow-modal"
-                />
+                <div className="relative rounded-2xl overflow-hidden shadow-modal w-full h-[400px] bg-grey-200">
+                  <img
+                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600"
+                    alt="How we work video thumbnail"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                    <div className="bg-white bg-opacity-90 rounded-full p-6 cursor-pointer hover:bg-opacity-100 transition-all">
+                      <PlayArrow sx={{ fontSize: 48, color: '#1E40AF' }} />
+                    </div>
+                    <Typography variant="button" className="absolute bottom-8 text-white font-semibold bg-black bg-opacity-50 px-4 py-2 rounded-lg">
+                      Play Video
+                    </Typography>
+                  </div>
+                </div>
               </div>
             </div>
           </Container>
