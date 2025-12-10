@@ -78,7 +78,7 @@ export default function HomePage() {
 
       <main className="min-h-screen">
         {/* Hero Section */}
-        <section className="relative overflow-hidden bg-[#F0F6FF] py-16 md:py-24">
+        <section className="relative overflow-hidden bg-[#F0F6FF] dark:bg-grey-900 py-16 md:py-24">
           {/* Background decorative elements */}
           <div className="absolute top-20 right-0 w-64 h-64 bg-primary-100 dark:bg-primary-900/20 rounded-full blur-3xl opacity-50" />
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent-100 dark:bg-accent-900/20 rounded-full blur-3xl opacity-30" />
@@ -237,11 +237,11 @@ export default function HomePage() {
         </section>
 
         {/* Trusted By Section */}
-        <section className="bg-white py-12 dark:bg-grey-900">
-          <div className="max-w-[1300px] mx-auto px-[70px] py-[35px] gap-[80px]" style={{height: '140px'}}>
-            <div className="flex items-center justify-between">
+        <section className="bg-white dark:bg-grey-900 py-8 md:py-12">
+          <div className="max-w-[1300px] mx-auto px-4 sm:px-6 md:px-[70px] py-4 md:py-[35px]">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-[80px]">
               {/* Left Section */}
-              <div className="max-w-[494px] gap-4" style={{height: '140px'}}>
+              <div className="w-full lg:max-w-[494px] text-center lg:text-left">
                 <Typography
                   variant="h3"
                   className="text-grey-900 dark:text-white mb-4"
@@ -249,7 +249,7 @@ export default function HomePage() {
                     fontFamily: 'IBM Plex Sans',
                     fontWeight: 500,
                     fontStyle: 'normal',
-                    fontSize: '32px',
+                    fontSize: 'clamp(24px, 4vw, 32px)',
                     lineHeight: '120%',
                     letterSpacing: '0%'
                   }}
@@ -263,7 +263,7 @@ export default function HomePage() {
                     fontFamily: 'IBM Plex Sans',
                     fontWeight: 400,
                     fontStyle: 'italic',
-                    fontSize: '16px',
+                    fontSize: 'clamp(14px, 2.5vw, 16px)',
                     lineHeight: '150%',
                     letterSpacing: '0%'
                   }}
@@ -273,13 +273,13 @@ export default function HomePage() {
               </div>
 
               {/* Right Section - Logo Grid */}
-              <div className="max-w-[726px]" style={{height: '137px'}}>
-                <div className="grid grid-rows-2 grid-cols-5 gap-[23px_20px]">
+              <div className="w-full lg:max-w-[726px]">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-[23px_20px] justify-items-center">
                   {trustedCompanies.map((company) => (
                     <div
                       key={company.name}
                       className="flex items-center justify-center"
-                      style={{width: '129.2px', height: '40.32px'}}
+                      style={{width: 'clamp(80px, 12vw, 129.2px)', height: 'clamp(25px, 4vw, 40.32px)'}}
                     >
                       <img
                         src={company.logo}
@@ -295,7 +295,7 @@ export default function HomePage() {
         </section>
 
         {/* How We Work Section */}
-        <section className="py-16 bg-primary-600">
+        <section className="py-16 bg-primary-600 dark:bg-primary-800">
           <Container maxWidth="lg">
             <div className="flex flex-col lg:flex-row gap-12 items-center">
               {/* Left Section - How We Work and Feature Cards */}
@@ -309,18 +309,18 @@ export default function HomePage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Feature Card 1 */}
-                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                  <div className="bg-white dark:bg-grey-800 rounded-xl p-6 shadow-lg">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center flex-shrink-0">
                         <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold">
                           1
                         </div>
                       </div>
                       <div>
-                        <Typography variant="h6" className="font-bold text-grey-900 mb-2">
+                        <Typography variant="h6" className="font-bold text-grey-900 dark:text-white mb-2">
                           Upload & Create
                         </Typography>
-                        <Typography variant="body2" className="text-grey-600">
+                        <Typography variant="body2" className="text-grey-600 dark:text-grey-300">
                           Upload your existing resume or create a new one with our AI assistance. Get instant feedback and suggestions to make it stand out.
                         </Typography>
                       </div>
@@ -328,18 +328,18 @@ export default function HomePage() {
                   </div>
 
                   {/* Feature Card 2 */}
-                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                  <div className="bg-white dark:bg-grey-800 rounded-xl p-6 shadow-lg">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center flex-shrink-0">
                         <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold">
                           2
                         </div>
                       </div>
                       <div>
-                        <Typography variant="h6" className="font-bold text-grey-900 mb-2">
+                        <Typography variant="h6" className="font-bold text-grey-900 dark:text-white mb-2">
                           Smart Matching
                         </Typography>
-                        <Typography variant="body2" className="text-grey-600">
+                        <Typography variant="body2" className="text-grey-600 dark:text-grey-300">
                           Our AI analyzes your skills, experience, and preferences to match you with perfect job opportunities from top companies.
                         </Typography>
                       </div>
@@ -347,18 +347,18 @@ export default function HomePage() {
                   </div>
 
                   {/* Feature Card 3 */}
-                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                  <div className="bg-white dark:bg-grey-800 rounded-xl p-6 shadow-lg">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center flex-shrink-0">
                         <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold">
                           3
                         </div>
                       </div>
                       <div>
-                        <Typography variant="h6" className="font-bold text-grey-900 mb-2">
+                        <Typography variant="h6" className="font-bold text-grey-900 dark:text-white mb-2">
                           One-Click Apply
                         </Typography>
-                        <Typography variant="body2" className="text-grey-600">
+                        <Typography variant="body2" className="text-grey-600 dark:text-grey-300">
                           Apply to multiple jobs with SmartApply technology. Customize your applications automatically and track everything in one place.
                         </Typography>
                       </div>
@@ -366,18 +366,18 @@ export default function HomePage() {
                   </div>
 
                   {/* Feature Card 4 */}
-                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                  <div className="bg-white dark:bg-grey-800 rounded-xl p-6 shadow-lg">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center flex-shrink-0">
                         <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold">
                           4
                         </div>
                       </div>
                       <div>
-                        <Typography variant="h6" className="font-bold text-grey-900 mb-2">
+                        <Typography variant="h6" className="font-bold text-grey-900 dark:text-white mb-2">
                           Interview Prep
                         </Typography>
-                        <Typography variant="body2" className="text-grey-600">
+                        <Typography variant="body2" className="text-grey-600 dark:text-grey-300">
                           Practice with AI-powered mock interviews, get real-time feedback, and receive personalized coaching to ace your interviews.
                         </Typography>
                       </div>
@@ -388,14 +388,14 @@ export default function HomePage() {
 
               {/* Right Section - Video Player */}
               <div className="flex-1">
-                <div className="relative rounded-2xl overflow-hidden shadow-modal w-full h-[400px] bg-grey-200">
+                <div className="relative rounded-2xl overflow-hidden shadow-modal w-full h-[400px] bg-grey-200 dark:bg-grey-700">
                   <img
                     src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600"
                     alt="How we work video thumbnail"
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-                    <div className="bg-white bg-opacity-90 rounded-full p-6 cursor-pointer hover:bg-opacity-100 transition-all">
+                    <div className="bg-white dark:bg-grey-800 bg-opacity-90 dark:bg-opacity-90 rounded-full p-6 cursor-pointer hover:bg-opacity-100 dark:hover:bg-opacity-100 transition-all">
                       <PlayArrow sx={{ fontSize: 48, color: '#1E40AF' }} />
                     </div>
                     <Typography variant="button" className="absolute bottom-8 text-white font-semibold bg-black bg-opacity-50 px-4 py-2 rounded-lg">
