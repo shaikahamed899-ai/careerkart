@@ -48,7 +48,20 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS
 app.use(cors({
-  origin: config.FRONTEND_URL,
+  origin: (origin, callback) => {
+    // Allow requests with or without trailing slash
+    const allowedOrigins = [
+      config.FRONTEND_URL,
+      config.FRONTEND_URL?.replace(/\/$/, ''),
+      config.FRONTEND_URL?.replace(/\/$/, '') + '/',
+    ].filter(Boolean);
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 
