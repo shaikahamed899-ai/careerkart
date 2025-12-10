@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authApi } from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
@@ -20,7 +20,7 @@ import {
   ArrowForward,
 } from "@mui/icons-material";
 
-export default function RoleSelectionPage() {
+function RoleSelectionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, login } = useAuthStore();
@@ -196,5 +196,17 @@ export default function RoleSelectionPage() {
         </Box>
       </Container>
     </Box>
+  );
+}
+
+export default function RoleSelectionPage() {
+  return (
+    <Suspense fallback={
+      <Box className="min-h-screen flex items-center justify-center bg-grey-50 dark:bg-grey-950">
+        <CircularProgress size={48} />
+      </Box>
+    }>
+      <RoleSelectionContent />
+    </Suspense>
   );
 }
